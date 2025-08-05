@@ -5,6 +5,13 @@ import { Card, CardContent } from "@/app/components/ui/card"
 import { Badge } from "@/app/components/ui/badge"
 import { Mic, MicOff, User, Briefcase, GraduationCap, MapPin, Phone, Mail, Loader2, Volume2, Download, Github, Linkedin } from "lucide-react"
 
+// Declare global types at the top level
+declare global {
+  interface Window {
+    webkitAudioContext?: typeof AudioContext;
+  }
+}
+
 export default function VoiceAssistant() {
   const [isListening, setIsListening] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
@@ -45,7 +52,7 @@ export default function VoiceAssistant() {
         if (silenceTimer.current) clearTimeout(silenceTimer.current)
         stream.getTracks().forEach((track) => track.stop())
         if (audioContext.current && audioContext.current.state !== 'closed') {
-            await audioContext.current.close();
+          await audioContext.current.close();
         }
         audioContext.current = null
 
@@ -86,39 +93,46 @@ export default function VoiceAssistant() {
       }
 
       // Setup audio analysis for silence detection
-      audioContext.current = new (window.AudioContext || (window as any).webkitAudioContext)()
-      analyser.current = audioContext.current.createAnalyser()
-      analyser.current.fftSize = 256
-      const bufferLength = analyser.current.frequencyBinCount
-      dataArray.current = new Uint8Array(bufferLength)
-      source.current = audioContext.current.createMediaStreamSource(stream)
-      source.current.connect(analyser.current)
+      try {
+        audioContext.current = new (window.AudioContext || window.webkitAudioContext)();
+        analyser.current = audioContext.current.createAnalyser()
+        analyser.current.fftSize = 256
+        const bufferLength = analyser.current.frequencyBinCount
+        dataArray.current = new Uint8Array(bufferLength)
+        source.current = audioContext.current.createMediaStreamSource(stream)
+        source.current.connect(analyser.current)
 
-      const detectSilence = () => {
-        if (!analyser.current || !dataArray.current) return
+        const detectSilence = () => {
+          if (!analyser.current || !dataArray.current) return
 
-        analyser.current.getByteFrequencyData(dataArray.current)
-        const average = dataArray.current.reduce((acc, val) => acc + val, 0) / dataArray.current.length
-        setAudioLevel(average)
+          analyser.current.getByteFrequencyData(dataArray.current)
+          const average = dataArray.current.reduce((acc, val) => acc + val, 0) / dataArray.current.length
+          setAudioLevel(average)
 
-        if (average < 35) { // Silence threshold
-          if (!silenceTimer.current) {
-            silenceTimer.current = setTimeout(() => {
-              handleStopRecording()
-            }, 5000) // 5 seconds of silence
+          if (average < 35) { // Silence threshold
+            if (!silenceTimer.current) {
+              silenceTimer.current = setTimeout(() => {
+                handleStopRecording()
+              }, 5000) // 5 seconds of silence
+            }
+          } else {
+            if (silenceTimer.current) {
+              clearTimeout(silenceTimer.current)
+              silenceTimer.current = null
+            }
           }
-        } else {
-          if (silenceTimer.current) {
-            clearTimeout(silenceTimer.current)
-            silenceTimer.current = null
-          }
+          animationFrameId.current = requestAnimationFrame(detectSilence)
         }
-        animationFrameId.current = requestAnimationFrame(detectSilence)
-      }
 
-      recorder.start()
-      setIsListening(true)
-      detectSilence()
+        recorder.start()
+        setIsListening(true)
+        detectSilence()
+      } catch (audioError) {
+        console.error("Error setting up audio analysis:", audioError)
+        // Continue without audio analysis if it fails
+        recorder.start()
+        setIsListening(true)
+      }
 
     } catch (error) {
       console.error("Error accessing microphone:", error)
@@ -131,12 +145,12 @@ export default function VoiceAssistant() {
       mediaRecorder.current.stop()
     }
     if (animationFrameId.current) {
-        cancelAnimationFrame(animationFrameId.current)
-        animationFrameId.current = null
+      cancelAnimationFrame(animationFrameId.current)
+      animationFrameId.current = null
     }
     if (silenceTimer.current) {
-        clearTimeout(silenceTimer.current)
-        silenceTimer.current = null
+      clearTimeout(silenceTimer.current)
+      silenceTimer.current = null
     }
     setIsListening(false)
     setAudioLevel(0)
@@ -198,7 +212,7 @@ export default function VoiceAssistant() {
       <div className="w-full max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Hi, I'm Mayank Mishra</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">Hi, I&apos;m Mayank Mishra</h1>
           <p className="text-xl text-gray-600">Generative AI Developer</p>
         </div>
 
@@ -372,12 +386,12 @@ export default function VoiceAssistant() {
           <CardContent className="p-6">
             <h3 className="font-semibold text-gray-900 mb-3 text-center">Try saying:</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-sm text-gray-600">
-              <div className="text-center">"Tell me about your internship at Centennial Infotech"</div>
-              <div className="text-center">"What AI projects have you built?"</div>
-              <div className="text-center">"What are your favorite technologies?"</div>
-              <div className="text-center">"What are you passionate about?"</div>
-              <div className="text-center">"Describe your problem-solving approach"</div>
-              <div className="text-center">"What are your career goals?"</div>
+              <div className="text-center">&quot;Tell me about your internship at Centennial Infotech&quot;</div>
+              <div className="text-center">&quot;What AI projects have you built?&quot;</div>
+              <div className="text-center">&quot;What are your favorite technologies?&quot;</div>
+              <div className="text-center">&quot;What are you passionate about?&quot;</div>
+              <div className="text-center">&quot;Describe your problem-solving approach&quot;</div>
+              <div className="text-center">&quot;What are your career goals?&quot;</div>
             </div>
           </CardContent>
         </Card>
