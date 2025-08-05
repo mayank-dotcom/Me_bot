@@ -105,7 +105,7 @@ export default function VoiceAssistant() {
         const detectSilence = () => {
           if (!analyser.current || !dataArray.current) return
 
-          analyser.current.getByteFrequencyData(dataArray.current)
+          analyser.current.getByteFrequencyData(dataArray.current as Uint8Array)
           const average = dataArray.current.reduce((acc, val) => acc + val, 0) / dataArray.current.length
           setAudioLevel(average)
 
