@@ -98,15 +98,16 @@ export default function VoiceAssistant() {
         analyser.current = audioContext.current.createAnalyser()
         analyser.current.fftSize = 256
         const bufferLength = analyser.current.frequencyBinCount
-        dataArray.current = new Uint8Array(bufferLength)
+        // Fix: Create Uint8Array with explicit ArrayBuffer
+        dataArray.current = new Uint8Array(new ArrayBuffer(bufferLength))
         source.current = audioContext.current.createMediaStreamSource(stream)
         source.current.connect(analyser.current)
 
         const detectSilence = () => {
           if (!analyser.current || !dataArray.current) return
 
-          // Fix: Remove the type assertion and handle the Uint8Array properly
-          analyser.current.getByteFrequencyData(dataArray.current)
+          // Fix: Handle the Uint8Array properly with type assertion for Web Audio API
+          analyser.current.getByteFrequencyData(dataArray.current as Uint8Array)
           const average = dataArray.current.reduce((acc, val) => acc + val, 0) / dataArray.current.length
           setAudioLevel(average)
 
