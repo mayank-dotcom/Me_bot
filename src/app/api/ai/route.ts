@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { MongoClient } from "mongodb";
 import OpenAI from "openai";
 
-dotenv.config();
+
 
 const MONGODB_URI = process.env.MONGODB_URI as string;
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
