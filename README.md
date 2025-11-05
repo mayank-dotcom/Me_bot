@@ -119,8 +119,3 @@ Open `http://localhost:3000` in your browser.
 - Enabled hands-free, human-like AI interaction.  
 - Improved accessibility for users preferring voice interfaces.  
 - Combined conversational intelligence with real-time speech response for a seamless experience.
-
----
-
-## License
-This project is licensed under the MIT License.
