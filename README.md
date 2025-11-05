@@ -1,6 +1,6 @@
-# VoiceMate – AI Conversational Bot with Voice Interaction
+# Me_Bot – AI Conversational Bot with Voice Interaction
 
-VoiceMate is an intelligent conversational agent that allows users to talk with their system through natural speech.  
+Me_Bot is an intelligent conversational agent that allows users to talk with their system through natural speech.  
 It listens to your voice, understands the intent using AI (LangChain + OpenAI), and responds back in voice format.  
 It also learns and remembers user details to deliver personalized and context-aware responses.
 
@@ -29,7 +29,7 @@ It also learns and remembers user details to deliver personalized and context-aw
 
 ## Project Architecture
 ```
-VoiceMate/
+Me_Bot/
  ┣ backend/
  ┃ ┣ controllers/
  ┃ ┣ routes/
@@ -63,8 +63,8 @@ VoiceMate/
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/voicemate.git
-cd voicemate
+git clone https://github.com/yourusername/Me_Bot.git
+cd Me_Bot
 ```
 
 ### 2. Install dependencies
@@ -108,8 +108,8 @@ Open `http://localhost:3000` in your browser.
 ---
 
 ## Example Flow
-1. User says: “Hey VoiceMate, what’s the weather like today?”  
-2. VoiceMate recognizes speech and converts it to text.  
+1. User says: “Hey Me_Bot, what’s the weather like today?”  
+2. Me_Bot recognizes speech and converts it to text.  
 3. The backend processes the request and queries OpenAI for the answer.  
 4. The response is read aloud: “It’s 26°C and partly cloudy in your area.”  
 
